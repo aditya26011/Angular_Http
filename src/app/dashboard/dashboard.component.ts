@@ -13,6 +13,8 @@ http:HttpClient=inject(HttpClient);
 
 showCreateTaskForm: boolean = false;
 
+allTask:Task[]=[];
+
 ngOnInit(): void {
   this.fetchAllTasks();
 }
@@ -28,6 +30,7 @@ ngOnInit(): void {
     const headers=new HttpHeaders({'my-headers':'hello-world'})
     this.http.post('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',data,{headers:headers}).subscribe((res)=>{
       console.log(res);
+      //this.fetchAllTasks();
     });
   }
 
@@ -37,6 +40,12 @@ ngOnInit(): void {
   key:{}
 }
 */
+
+FetchAllTasksClicked(){
+  this.fetchAllTasks();
+}
+
+
   private fetchAllTasks(){
     this.http.
     get<{[key:string]:Task}>('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json')
@@ -52,7 +61,7 @@ ngOnInit(): void {
       return task;
     }))
     .subscribe((task)=>{
-      console.log(task)
+      this.allTask=task;
     })
   }
 }
