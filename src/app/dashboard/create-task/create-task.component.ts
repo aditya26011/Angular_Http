@@ -1,4 +1,5 @@
 import { Component ,EventEmitter, Output} from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-create-task',
@@ -11,5 +12,9 @@ export class CreateTaskComponent {
 
   OnCloseForm(){
     this.CloseForm.emit(false);
+  }
+
+  onFormSubmitted(form:NgForm){
+    console.log(form.value)
   }
 }
