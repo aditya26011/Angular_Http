@@ -20,5 +20,7 @@ export class CreateTaskComponent {
 
   onFormSubmitted(form:NgForm){
     this.EmitTaskData.emit(form.value);
+        this.CloseForm.emit(false);
+
   }
 }
