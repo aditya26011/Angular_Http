@@ -1,6 +1,7 @@
 <app-create-task 
         *ngIf="showCreateTaskForm" 
         (CloseForm)="CloseCreateTaskForm()"
+        (EmitTaskData)="CreateTask($event)"
 ></app-create-task>
 
 <div class="dashboard-container">

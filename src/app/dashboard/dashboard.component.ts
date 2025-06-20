@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Task } from '../Model/task';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,5 +15,8 @@ showCreateTaskForm: boolean = false;
 
   CloseCreateTaskForm(){
     this.showCreateTaskForm = false;
+  }
+  CreateTask(data:Task){
+    console.log(data);
   }
 }
