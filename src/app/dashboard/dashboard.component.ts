@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Task } from '../Model/task';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs';
+
+import { TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,10 +9,8 @@ import { map } from 'rxjs';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-http:HttpClient=inject(HttpClient);
-
 showCreateTaskForm: boolean = false;
-
+taskservice:TaskService=inject(TaskService);
 allTask:Task[]=[];
 
 ngOnInit(): void {
@@ -26,12 +24,9 @@ ngOnInit(): void {
   CloseCreateTaskForm(){
     this.showCreateTaskForm = false;
   }
+ 
   CreateTask(data:Task){
-    const headers=new HttpHeaders({'my-headers':'hello-world'})
-    this.http.post('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',data,{headers:headers}).subscribe((res)=>{
-      console.log(res);
-      this.fetchAllTasks();
-    });
+    this.taskservice.CreateTask(data)
   }
 
 /*
@@ -47,35 +42,17 @@ FetchAllTasksClicked(){
 
 
   private fetchAllTasks(){
-    this.http.
-    get<{[key:string]:Task}>('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json')
-    .pipe(map((response)=>{
-      let task=[];
-
-      for(let key in response){
-        if(response.hasOwnProperty(key)){
-
-          task.push({...response[key],id:key})
-        }
-      }
-      return task;
-    }))
-    .subscribe((task)=>{
+    this.taskservice.GetAllTask().subscribe((task)=>{
       this.allTask=task;
     })
   }
 
 
   DeleteTask(id:string| undefined){
-    this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+ id +'.json')
-    .subscribe((res)=>{
-      this.fetchAllTasks();
-    })
+   this.taskservice.DeleteTask(id);
   }
 
   DeleteAll(){
-    this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json').subscribe((res)=>{
-      this.fetchAllTasks();
-    })
+   this.taskservice.DeleteAllTask();
   }
 }
