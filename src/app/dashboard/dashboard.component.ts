@@ -14,23 +14,31 @@ taskservice:TaskService=inject(TaskService);
 allTask:Task[]=[];
 selectedTask!:Task;
 EditMode:boolean=false;
-
+currentSelectedTaskId:string|undefined;
 ngOnInit(): void {
   this.fetchAllTasks();
 }
 
   OpenCreateTaskForm(){
     this.showCreateTaskForm = true;
+      this.EditMode=false;
+    this.selectedTask={title:'',desc:'',assignedTo:'',createdAt:'',priority:'',status:''};
+
   }
 
   CloseCreateTaskForm(){
     this.showCreateTaskForm = false;
   }
  
-  CreateTask(data:Task){
-    this.taskservice.CreateTask(data)
-    this.EditMode=false;
-    this.selectedTask={title:'',desc:'',assignedTo:'',createdAt:'',priority:'',status:''};
+  CreateOrUpdateTask(data:Task){
+    if(!this.EditMode){
+
+      this.taskservice.CreateTask(data)
+    }
+    else{
+      //edit task
+          this.taskservice.updateTask(this.currentSelectedTaskId,data);
+    }
   }
 
 /*
@@ -62,6 +70,7 @@ FetchAllTasksClicked(){
 
   OnEditClicked(id:string|undefined){
     //Open the form
+   this.currentSelectedTaskId=id
     this.showCreateTaskForm=true;
     this.EditMode=true;
     this.selectedTask=this.allTask.find((task)=>task.id===id);

@@ -43,5 +43,8 @@ http:HttpClient=inject(HttpClient);
       return task;
     }))
   }
+  updateTask(id:string|undefined,data:Task){
+    this.http.put('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+id+'.json',data).subscribe()
+  }
   }
 
