@@ -30,7 +30,7 @@ ngOnInit(): void {
     const headers=new HttpHeaders({'my-headers':'hello-world'})
     this.http.post('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',data,{headers:headers}).subscribe((res)=>{
       console.log(res);
-      //this.fetchAllTasks();
+      this.fetchAllTasks();
     });
   }
 
@@ -62,6 +62,20 @@ FetchAllTasksClicked(){
     }))
     .subscribe((task)=>{
       this.allTask=task;
+    })
+  }
+
+
+  DeleteTask(id:string| undefined){
+    this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+ id +'.json')
+    .subscribe((res)=>{
+      this.fetchAllTasks();
+    })
+  }
+
+  DeleteAll(){
+    this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json').subscribe((res)=>{
+      this.fetchAllTasks();
     })
   }
 }
