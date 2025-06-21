@@ -53,8 +53,12 @@ logginservice:LogginService=inject(LogginService);
   }
 
   GetAllTask(){
+    let headers=new HttpHeaders();// httpHeaders is an immutable type instance it will return a new instance
+    headers=headers.set('content-type','application/json');
+    headers=headers.set('Access-control-Allow-origin','*');
+
    return this.http.
-    get<{[key:string]:Task}>('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json')
+    get<{[key:string]:Task}>('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',{headers:headers})
     .pipe(map((response)=>{
       let task=[];
 
