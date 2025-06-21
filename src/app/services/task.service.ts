@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Task } from "../Model/task";
 import { catchError, map, Subject, throwError, UnaryFunction } from "rxjs";
@@ -57,8 +57,13 @@ logginservice:LogginService=inject(LogginService);
     headers=headers.set('content-type','application/json');
     headers=headers.set('Access-control-Allow-origin','*');
 
+    let qureyParams=new HttpParams();
+    qureyParams=qureyParams.set('page',2);
+    qureyParams=qureyParams.set('item',10);
+
+
    return this.http.
-    get<{[key:string]:Task}>('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',{headers:headers})
+    get<{[key:string]:Task}>('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',{headers:headers,params:qureyParams})
     .pipe(map((response)=>{
       let task=[];
 
