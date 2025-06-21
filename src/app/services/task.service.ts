@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Task } from "../Model/task";
-import { map } from "rxjs";
+import { map, Subject } from "rxjs";
 
 @Injectable({
     providedIn:'root'
@@ -9,18 +9,19 @@ import { map } from "rxjs";
 export class TaskService{
 
 http:HttpClient=inject(HttpClient);
+errorSubject=new Subject<HttpErrorResponse>();
 
 
  CreateTask(data:Task){
     const headers=new HttpHeaders({'my-headers':'hello-world'})
-    this.http.post('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',data,{headers:headers}).subscribe((res)=>{
-      console.log(res);
-    });
+    this.http.post('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',data,{headers:headers})
+    .subscribe({error:(err)=>{
+      this.errorSubject.next(err);
+    }});
   }
   DeleteTask(id:string | undefined){
     this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+ id +'.json')
-    .subscribe((res)=>{
-    })
+    .subscribe()
   }
 
   DeleteAllTask(){

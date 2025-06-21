@@ -3,6 +3,7 @@ import { Task } from '../Model/task';
 
 import { TaskService } from '../services/task.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,9 +19,13 @@ EditMode:boolean=false;
 currentSelectedTaskId:string|undefined;
 
 errorMessage:string|null=null;
+errSub:Subscription;
 
 ngOnInit(): void {
   this.fetchAllTasks();
+  this.errSub=this.taskservice.errorSubject.subscribe({next:(err)=>{
+    this.setErrorMsg(err);
+  }})
 }
 
   OpenCreateTaskForm(){
@@ -73,6 +78,9 @@ FetchAllTasksClicked(){
     if(err.error.error==="Permission denied"){
       this.errorMessage='You do not have permession '
     }
+    else{
+      this.errorMessage=err.message;
+    }
   }
 
   DeleteTask(id:string| undefined){
@@ -89,5 +97,9 @@ FetchAllTasksClicked(){
     this.showCreateTaskForm=true;
     this.EditMode=true;
     this.selectedTask=this.allTask.find((task)=>task.id===id);
+  }
+
+  ngOnDestroy(){
+    this.errSub.unsubscribe();
   }
 }
