@@ -3,6 +3,7 @@ import { Observable, retry, tap } from "rxjs";
 
 export class AuthInterceptor implements HttpInterceptor{
     intercept(req: HttpRequest<any>, next: HttpHandler) {
+        console.log('Auth Interceptor called!')
        const modified= req.clone({headers:req.headers.append('aut','axv')})
        return next.handle(modified).pipe(tap((event)=>{
         if(event.type===HttpEventType.Response){
