@@ -21,6 +21,7 @@
     <hr>
 
     <div class="dashboard-item-container" >
+        <div class="sb sb-error" *ngIf="errorMessage">{{errorMessage}}</div>
         <div style="text-align: center;" *ngIf="allTask.length<1"><h2>No Task Created Yet</h2></div>
             <div class="task-item" [ngClass]="'task-'+task.status" *ngFor="let task of allTask">
                 <div class="task-title">

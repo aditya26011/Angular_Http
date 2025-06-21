@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Task } from '../Model/task';
 
 import { TaskService } from '../services/task.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,9 @@ allTask:Task[]=[];
 selectedTask!:Task;
 EditMode:boolean=false;
 currentSelectedTaskId:string|undefined;
+
+errorMessage:string|null=null;
+
 ngOnInit(): void {
   this.fetchAllTasks();
 }
@@ -54,11 +58,22 @@ FetchAllTasksClicked(){
 
 
   private fetchAllTasks(){
-    this.taskservice.GetAllTask().subscribe((task)=>{
+    this.taskservice.GetAllTask().subscribe({next:(task)=>{
       this.allTask=task;
-    })
+    },error:(err)=>{
+      this.setErrorMsg(err);
+    //  this.errorMessage=err.message;
+     setTimeout(()=>{
+      this.errorMessage=null
+    },3000)
+    }})
   }
 
+  private setErrorMsg(err:HttpErrorResponse){
+    if(err.error.error==="Permission denied"){
+      this.errorMessage='You do not have permession '
+    }
+  }
 
   DeleteTask(id:string| undefined){
    this.taskservice.DeleteTask(id);
