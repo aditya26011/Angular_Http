@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class DashboardComponent implements OnInit {
 showCreateTaskForm: boolean = false;
+showTaskDetail:boolean=false
 taskservice:TaskService=inject(TaskService);
 allTask:Task[]=[];
 selectedTask!:Task;
@@ -20,6 +21,7 @@ currentSelectedTaskId:string|undefined;
 
 errorMessage:string|null=null;
 errSub:Subscription;
+currentTask:Task|null=null;
 
 ngOnInit(): void {
   this.fetchAllTasks();
@@ -97,6 +99,17 @@ FetchAllTasksClicked(){
     this.showCreateTaskForm=true;
     this.EditMode=true;
     this.selectedTask=this.allTask.find((task)=>task.id===id);
+  }
+
+  showCurrentTaskDetail(id:string |undefined){
+    this.showTaskDetail=true;
+    this.taskservice.getTaskDetails(id).subscribe({next:(data:Task)=>{
+      this.currentTask=data;
+    }});
+  }
+
+  closeCurrentTaskDetail(){
+    this.showTaskDetail=false;
   }
 
   ngOnDestroy(){

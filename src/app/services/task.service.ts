@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Task } from "../Model/task";
-import { catchError, map, Subject, throwError } from "rxjs";
+import { catchError, map, Subject, throwError, UnaryFunction } from "rxjs";
 import { LogginService } from "./Loggins.service";
 
 @Injectable({
@@ -83,6 +83,15 @@ logginservice:LogginService=inject(LogginService);
       return throwError(()=>err)
     }))
     .subscribe()
+  }
+
+  getTaskDetails(id:string|undefined){
+   return this.http.get('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+ id +'.json')
+    .pipe(map((response)=>{
+      let task={};
+      task={...response,id:id}
+      return task;
+    }))
   }
   }
 
