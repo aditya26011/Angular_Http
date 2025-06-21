@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Task } from "../Model/task";
-import { map, Subject } from "rxjs";
+import { catchError, map, Subject, throwError } from "rxjs";
+import { LogginService } from "./Loggins.service";
 
 @Injectable({
     providedIn:'root'
@@ -10,22 +11,44 @@ export class TaskService{
 
 http:HttpClient=inject(HttpClient);
 errorSubject=new Subject<HttpErrorResponse>();
-
+logginservice:LogginService=inject(LogginService);
 
  CreateTask(data:Task){
     const headers=new HttpHeaders({'my-headers':'hello-world'})
     this.http.post('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json',data,{headers:headers})
+    .pipe(catchError((err)=>{
+      //write logic to log errors
+      const errorObj={statusCode:err.status,errorMessage:err.message,dateTime:new Date()};
+      this.logginservice.logError(errorObj)
+
+      return throwError(()=>err)
+    }))
     .subscribe({error:(err)=>{
       this.errorSubject.next(err);
     }});
   }
   DeleteTask(id:string | undefined){
     this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+ id +'.json')
+    .pipe(catchError((err)=>{
+      //write logic to log errors
+      const errorObj={statusCode:err.status,errorMessage:err.message,dateTime:new Date()};
+      this.logginservice.logError(errorObj)
+
+      return throwError(()=>err)
+    }))
     .subscribe()
   }
 
   DeleteAllTask(){
-     this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json').subscribe((res)=>{
+     this.http.delete('https://http-request-9281e-default-rtdb.firebaseio.com/tasks.json')
+     .pipe(catchError((err)=>{
+      //write logic to log errors
+      const errorObj={statusCode:err.status,errorMessage:err.message,dateTime:new Date()};
+      this.logginservice.logError(errorObj)
+
+      return throwError(()=>err)
+    }))
+     .subscribe((res)=>{
     })
   }
 
@@ -42,10 +65,24 @@ errorSubject=new Subject<HttpErrorResponse>();
         }
       }
       return task;
+    }),catchError((err)=>{
+      //write logic to log errors
+      const errorObj={statusCode:err.status,errorMessage:err.message,dateTime:new Date()};
+      this.logginservice.logError(errorObj)
+
+      return throwError(()=>err)
     }))
   }
   updateTask(id:string|undefined,data:Task){
-    this.http.put('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+id+'.json',data).subscribe()
+    this.http.put('https://http-request-9281e-default-rtdb.firebaseio.com/tasks/'+id+'.json',data)
+    .pipe(catchError((err)=>{
+      //write logic to log errors
+      const errorObj={statusCode:err.status,errorMessage:err.message,dateTime:new Date()};
+      this.logginservice.logError(errorObj)
+
+      return throwError(()=>err)
+    }))
+    .subscribe()
   }
   }
 
